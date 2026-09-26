@@ -1,0 +1,8 @@
+---
+- name: Enroll EC2 instances in disk monitoring
+  hosts: all
+  become: true
+  gather_facts: true
+
+  roles:
+    - cloudwatch_agent

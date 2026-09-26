@@ -1,0 +1,34 @@
+{
+  "agent": {
+    "metrics_collection_interval": {{ cloudwatch_collection_interval }},
+    "run_as_user": "root"
+  },
+  "metrics": {
+    "namespace": "{{ cloudwatch_metrics_namespace }}",
+    "append_dimensions": {
+      "InstanceId": "${aws:InstanceId}",
+      "InstanceType": "${aws:InstanceType}"
+    },
+    "metrics_collected": {
+      "disk": {
+        "measurement": [
+          "used_percent",
+          "free"
+        ],
+        "metrics_collection_interval": {{ cloudwatch_collection_interval }},
+        "resources": [
+          "*"
+        ],
+        "ignore_file_system_types": [
+          "sysfs",
+          "devtmpfs",
+          "tmpfs",
+          "overlay",
+          "squashfs",
+          "proc",
+          "devpts"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+---
+- name: Verify disk monitoring configuration
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Check CloudWatch Agent service
+      ansible.builtin.command:
+        cmd: systemctl is-active amazon-cloudwatch-agent
+      register: cloudwatch_agent_status
+      changed_when: false
+      failed_when: false
+
+    - name: Display CloudWatch Agent status
+      ansible.builtin.debug:
+        msg: "CloudWatch Agent status: {{ cloudwatch_agent_status.stdout }}"
+
+    - name: Check filesystem utilization
+      ansible.builtin.command:
+        cmd: df -P -x tmpfs -x devtmpfs
+      register: filesystem_usage
+      changed_when: false
+
+    - name: Display filesystem utilization
+      ansible.builtin.debug:
+        var: filesystem_usage.stdout_lines
+
+    - name: Fail if CloudWatch Agent is not active
+      ansible.builtin.assert:
+        that:
+          - cloudwatch_agent_status.stdout == "active"
+        fail_msg: "Amazon CloudWatch Agent is not active."
+        success_msg: "Amazon CloudWatch Agent is active."

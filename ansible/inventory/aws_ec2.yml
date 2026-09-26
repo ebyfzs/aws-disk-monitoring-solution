@@ -1,0 +1,23 @@
+---
+plugin: amazon.aws.aws_ec2
+
+regions:
+  - eu-west-1
+
+filters:
+  instance-state-name: running
+  tag:DiskMonitoring: enabled
+
+hostnames:
+  - instance-id
+
+keyed_groups:
+  - key: ec2_tags.Environment | default('unknown')
+    prefix: env
+
+  - key: ec2_tags.Application | default('unknown')
+    prefix: app
+
+compose:
+  ansible_host: instance_id
+  ansible_connection: "'amazon.aws.aws_ssm'"

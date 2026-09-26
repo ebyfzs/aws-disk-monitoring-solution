@@ -1,0 +1,4 @@
+---
+cloudwatch_agent_config_path: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+cloudwatch_metrics_namespace: Lucidity/DiskMonitoring
+cloudwatch_collection_interval: 60

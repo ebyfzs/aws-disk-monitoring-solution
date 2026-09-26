@@ -1,0 +1,26 @@
+---
+- name: Install Amazon CloudWatch Agent on Amazon Linux / RHEL
+  ansible.builtin.package:
+    name: amazon-cloudwatch-agent
+    state: present
+  when: ansible_facts.os_family == "RedHat"
+
+- name: Install Amazon CloudWatch Agent on Debian / Ubuntu
+  ansible.builtin.apt:
+    deb: "https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb"
+    state: present
+  when: ansible_facts.os_family == "Debian"
+
+- name: Deploy CloudWatch Agent disk monitoring configuration
+  ansible.builtin.template:
+    src: amazon-cloudwatch-agent.json.j2
+    dest: "{{ cloudwatch_agent_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart CloudWatch Agent
+
+- name: Ensure Amazon CloudWatch Agent is enabled
+  ansible.builtin.service:
+    name: amazon-cloudwatch-agent
+    enabled: true
